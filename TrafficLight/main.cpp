@@ -13,29 +13,54 @@ const string RED = "КРАСНЫЙ";
 // Глобальная переменная для подсчёта прошедших секунд c начала работы программы
 int secondsSinceStart = 1;
 
+// Предыдущие цвета светофоров
+string prevLightSheep = RED;
+string prevLightCow = RED;
+
+// Получить статус заслонки
+string getGateStatus(const string currentLight, const string prevLight) {
+    if (currentLight == GREEN) return "ОТКРЫТА";
+    if (currentLight == YELLOW && prevLight == GREEN) return "ОТКРЫТА";
+    return "ЗАКРЫТА";
+}
+
 // Функция печати состояния светофоров и прошедших секунд c начала работы программы
-void printConsol(const string light1, const string light2) {
+void printConsol(const string lightSheep, const string lightCow) {
+
+    string gateSheep = getGateStatus(lightSheep, prevLightSheep);
+    string gateCow = getGateStatus(lightCow, prevLightCow);
+
+    system("cls");
 
     cout << "    Прошло секунд с запуска: " << secondsSinceStart << endl;
     cout << "  --------------------------------" << endl;
-    cout << "  |" << "         ДЛЯ ОВЕЦ:            |" << endl;
+    cout << "  |" << "          ДЛЯ ОВЕЦ:            |" << endl;
     cout << "  --------------------------------" << endl;
-    cout << "  |" << "   Светофор   |     " << light1 << "    |" << endl;
+    cout << "  |" << "   Светофор   |     " << lightSheep << "    |" << endl;
     cout << "  --------------------------------" << endl;
-    cout << "  |" << "         ДДЛЯ КОРОВ:           |" << endl;
+    cout << "  |" << "   Заслонка   |     " << gateSheep << "    |" << endl;
     cout << "  --------------------------------" << endl;
-    cout << "  |" << "   Светофор   |     " << light2 << "    |" << endl;
+    cout << "  |" << "          ДЛЯ КОРОВ:           |" << endl;
+    cout << "  --------------------------------" << endl;
+    cout << "  |" << "   Светофор   |     " << lightCow << "    |" << endl;
+    cout << "  --------------------------------" << endl;
+    cout << "  |" << "   Заслонка   |     " << gateCow << "    |" << endl;
     cout << "  --------------------------------" << endl << endl << endl;
 }
 
 // Функция, выполняющая фазу с заданной длительностью
-void runPhase(const string light1, const string light2, int durationSeconds) {
+void runPhase(const string lightSheep, const string lightCow, int durationSeconds) {
     for (int i = 0; i < durationSeconds; ++i) {
-        printConsol(light1, light2);
+        printConsol(lightSheep, lightCow);
         this_thread::sleep_for(seconds(1));
         ++secondsSinceStart;
     }
+
+    // Сохраняем текущие цвета как предыдущие
+    prevLightSheep = lightSheep;
+    prevLightCow = lightCow;
 }
+
 
 int main() {
     setlocale(LC_ALL, "RUS");
@@ -47,5 +72,4 @@ int main() {
     }
 
     return 0;
-
 }
